@@ -149,10 +149,11 @@ argocd login argocd-host-url --username admin
 ![ArgoCD Repo](./imgs/argocd-repo.png)
 
 #### 🚀 Create and Manage Applications
-
 ![ArgoCD App 1](./imgs/argocd-app-1.png)
 ![ArgoCD App 2](./imgs/argocd-app-2.png)
 ![ArgoCD App 3](./imgs/argocd-app-3.png)
+
+![ArgoCD Dashboard](./imgs/argocd-dashboard.png)
 
 ---
 

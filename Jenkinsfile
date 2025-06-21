@@ -107,8 +107,12 @@ pipeline {
                     git config --global user.email "nadaessa086@gmail.com"
                     git add ./k8s/deployment.yaml
                     git commit -m "Updated Deployment Manifest"
-                    git push https://github.com/nada-086/Register-App-Deployment.git master
                 '''
+                withCredentials([usernamePassword(credentialsId: 'github-token', usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
+                    sh '''
+                        git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/nada-086/Register-App-Deployment.git master
+                    '''
+                }
             }
         }
     }
