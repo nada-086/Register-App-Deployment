@@ -19,6 +19,12 @@ pipeline {
             }
         }
 
+        stage ('Trivy File Scan') {
+            steps {
+                sh "trivy fs --format table -o fs.html ."         
+            }
+        }
+
         stage ('Application Build') {
             steps {
                 sh 'mvn clean package'
@@ -28,6 +34,16 @@ pipeline {
         stage ('Application Test') {
             steps {
                 sh 'mvn test'
+            }
+        }
+
+        stage ('SonarQube Analysis') {
+            steps {
+                script {
+                    withSonarQubeEnv(credentialsId: 'sonarqube-token') {
+                        sh 'mvn sonar:sonar'
+                    }
+                }
             }
         }
     }
