@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: register-app
-          image: nadaessa/register-app:v1
+          image: nadaessa/register-app:27
           resources:
             limits:
               memory: "256Mi"
