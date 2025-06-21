@@ -30,7 +30,9 @@ Install the following plugins:
 * **Pipeline Maven Integration**
 * **Eclipse Temurin Installer**
 * **SonarQube**
-* ***Sonar Quality Gates**
+* **Sonar Quality Gates**
+* **Docker**
+* **Docker Commons**
 * **Docker Pipeline**
 * **Kubernetes CLI Plugin**
 * **GitHub Integration**

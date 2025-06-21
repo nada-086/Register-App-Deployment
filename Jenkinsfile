@@ -54,5 +54,16 @@ pipeline {
                 }
             }
         }
+
+        stage ('Build and Push Docker Image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-token', passwordVariable: 'dockerhubpass', usernameVariable: 'dockerhubuser')]) {
+                    sh "docker login -u ${dockerhubuser} -p ${dockerhubpass}"
+                }
+                sh '''
+                    docker push nadaessa/register-app:v${BUILD_NUMBER}
+                '''
+            }
+        }
     }
 }
