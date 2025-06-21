@@ -85,6 +85,9 @@ docker run -d --name sonarqube -p 9000:9000 sonarqube:lts
 5. Configure SonarQube Scanner Tool on Jenkins
 ![SonarQube Scanner Tool](./imgs/sonarqube-scanner-tool.png)
 
+6. Create SonarQube Webhook
+![SonarQube Webhook](./imgs/sonarqube-webhook.png)
+
 ---
 
 ### 🔒 Trivy Installation
