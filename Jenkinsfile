@@ -61,7 +61,7 @@ pipeline {
                     sh "docker login -u ${dockerhubuser} -p ${dockerhubpass}"
                 }
                 sh '''
-                    docker push nadaessa/register-app:v${BUILD_NUMBER}
+                    docker build -t nadaessa/register-app:v${BUILD_NUMBER} .
                 '''
             }
         }

@@ -110,4 +110,38 @@ sudo apt-get install trivy
 - Add the Token to Jenkins Credentials
 ![Jenkins Credentials](./imgs/jenkins-credentials.png)
 
+---
+
+### Configure ArgoCD
+```bash
+kubectl create namespace argocd
+kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+kubectl port-forward svc/argocd-server -n argocd 8000:443
+```
+
+- User the following command to get the admin user password
+```bash
+kubectl get secret argocd-initial-admin-secret -n argocd -o jsonpath="{.data.password}" | base64 -d
+```
+
+- Download ArgoCD CLI
+```bash
+VERSION=$(curl -s https://api.github.com/repos/argoproj/argo-cd/releases/latest | grep tag_name | cut -d '"' -f 4)
+curl -sSL -o argocd "https://github.com/argoproj/argo-cd/releases/download/$VERSION/argocd-linux-amd64"
+chmod +x argocd
+sudo mv argocd /usr/local/bin/
+```
+
+- Login to ArgoCD CLI
+```bash
+argocd login argocd-host-url --username admin
+```
+
+#### Configure ArgoCD Repo
+![ArgoCD Repo](./imgs/argocd-repo.png)
+
+#### Configure ArgoCD App
+![ArgoCD App 1](./imgs/argocd-app-1.png)
+![ArgoCD App 2](./imgs/argocd-app-2.png)
+![ArgoCD App 3](./imgs/argocd-app-3.png)
 
