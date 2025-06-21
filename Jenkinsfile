@@ -75,7 +75,7 @@ pipeline {
         stage ('Scanning the Image using Trivy') {
             steps {
                 sh '''
-                    trivy image --format table --output register-app-scan.html nadaessa/register-app:v${BUILD_NUMBER}
+                    trivy image --format table --output register-app-scan.html ${IMAGE_NAME}
                 '''
             }
         }
@@ -86,7 +86,7 @@ pipeline {
                     sh "docker login -u ${dockerhubuser} -p ${dockerhubpass}"
                 }
                 sh '''
-                    docker build -t ${IMAGE_NAME} .
+                    docker push ${IMAGE_NAME}
                 '''
             }
         }
@@ -94,8 +94,8 @@ pipeline {
         stage ('ArgoCD Trigger') {
             steps {
                 sh """
-                    sed -i 's/${APP_NAME}.*/$IMAGE_NAME/g' deployment.yaml
-                    cat deployment.yaml
+                    sed -i 's/${APP_NAME}.*/$IMAGE_NAME/g' ./k8s/deployment.yaml
+                    cat ./k8s/deployment.yaml
                 """
             }
         }
@@ -103,9 +103,11 @@ pipeline {
         stage("Push the changed deployment file to Git") {
             steps {
                 sh '''
-                   git add deployment.yaml
-                   git commit -m "Updated Deployment Manifest"
-                   git push https://github.com/nada-086/Register-App-Deployment.git master
+                    git config --global user.name "Nada Essa"
+                    git config --global user.email "nadaessa086@gmail.com"
+                    git add ./k8s/deployment.yaml
+                    git commit -m "Updated Deployment Manifest"
+                    git push https://github.com/nada-086/Register-App-Deployment.git master
                 '''
             }
         }
