@@ -6,6 +6,12 @@ pipeline {
         maven "Maven3"
     }
 
+    environment {
+        APP_NAME = "nadaessa/register-app"
+        IMAGE_TAG = "${BUILD_NUMBER}"
+        IMAGE_NAME = "${APP_NAME}:${IMAGE_TAG}"
+    }
+
     stages {
         stage ('Clean Up') {
             steps {
@@ -61,7 +67,7 @@ pipeline {
                     sh "docker login -u ${dockerhubuser} -p ${dockerhubpass}"
                 }
                 sh '''
-                    docker build -t nadaessa/register-app:v${BUILD_NUMBER} .
+                    docker build -t ${IMAGE_NAME} .
                 '''
             }
         }
@@ -69,7 +75,7 @@ pipeline {
         stage ('Scanning the Image using Trivy') {
             steps {
                 sh '''
-                trivy image --format table --output register-app-scan.html nadaessa/register-app:v${BUILD_NUMBER}
+                    trivy image --format table --output register-app-scan.html nadaessa/register-app:v${BUILD_NUMBER}
                 '''
             }
         }
@@ -80,7 +86,26 @@ pipeline {
                     sh "docker login -u ${dockerhubuser} -p ${dockerhubpass}"
                 }
                 sh '''
-                    docker build -t nadaessa/register-app:v${BUILD_NUMBER} .
+                    docker build -t ${IMAGE_NAME} .
+                '''
+            }
+        }
+
+        stage ('ArgoCD Trigger') {
+            steps {
+                sh """
+                    sed -i 's/${APP_NAME}.*/$IMAGE_NAME/g' deployment.yaml
+                    cat deployment.yaml
+                """
+            }
+        }
+
+        stage("Push the changed deployment file to Git") {
+            steps {
+                sh '''
+                   git add deployment.yaml
+                   git commit -m "Updated Deployment Manifest"
+                   git push https://github.com/nada-086/Register-App-Deployment.git master
                 '''
             }
         }
