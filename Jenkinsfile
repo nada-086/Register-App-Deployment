@@ -55,13 +55,32 @@ pipeline {
             }
         }
 
-        stage ('Build and Push Docker Image') {
+        stage ('Build Docker Image') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub-token', passwordVariable: 'dockerhubpass', usernameVariable: 'dockerhubuser')]) {
                     sh "docker login -u ${dockerhubuser} -p ${dockerhubpass}"
                 }
                 sh '''
                     docker push nadaessa/register-app:v${BUILD_NUMBER}
+                '''
+            }
+        }
+
+        stage ('Scanning the Image using Trivy') {
+            steps {
+                sh '''
+                trivy image --format table --output register-app-scan.html nadaessa/register-app:v${BUILD_NUMBER}
+                '''
+            }
+        }
+
+        stage ('Push the Docker Image to DockerHub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-token', passwordVariable: 'dockerhubpass', usernameVariable: 'dockerhubuser')]) {
+                    sh "docker login -u ${dockerhubuser} -p ${dockerhubpass}"
+                }
+                sh '''
+                    docker build -t nadaessa/register-app:v${BUILD_NUMBER} .
                 '''
             }
         }
